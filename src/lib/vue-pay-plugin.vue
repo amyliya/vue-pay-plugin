@@ -99,8 +99,12 @@
     position:fixed;
     left:0;
     right:0;
-    bottom:-89.2%;
+    height:100%;
+    bottom:-100%;
     z-index:99;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     overflow: hidden;
     transition: transform .2s;
     transform: translateY(0);
