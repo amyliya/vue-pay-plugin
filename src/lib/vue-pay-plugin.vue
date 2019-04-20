@@ -1,65 +1,71 @@
 <template>
   <div id="pay">
     <div :class="payOptions.isShow ? 'pay-container pay-container-active' : 'pay-container'">
-      <div class="pay-info-panel">
-        <div class="pay-info-header">
-          <div class="close-pay-btn">
-            <img src="../assets/icon-close-pay.png" alt="">
+      <div class="pay-container-index" v-show="!isLoading">
+        <div class="pay-info-panel">
+          <div class="pay-info-header">
+            <div class="close-pay-btn" @click="closePanel()">
+              <img src="../assets/icon-close-pay.png" alt="">
+            </div>
+            <div class="avatar">
+              <img src="../assets/avatar.jpg" alt="">
+            </div>
+            <div class="tips">请输入支付密码</div>
           </div>
-          <div class="avatar">
-            <img src="../assets/avatar.jpg" alt="">
-          </div>
-          <div class="tips">请输入支付密码</div>
-        </div>
-        <div class="pay-info-body">
-          <div class="pay-info">
-            <div class="seller-name">当当网</div>
-            <div class="money">
-              ¥<span>49.50</span>
+          <div class="pay-info-body">
+            <div class="pay-info">
+              <div class="seller-name">当当网</div>
+              <div class="money">
+                ¥<span>49.50</span>
+              </div>
+            </div>
+            <div class="pay-type">
+              <img src="../assets/icon-money.png" alt="">
+              <span>零钱</span>
+            </div>
+            <!--密码-->
+            <div class="pay-password-panel">
+              <div class="pay-password-wrapper">
+                <div class="pay-input" v-for="(item, index) in pwdLength" :key="index" @click="setPullDown">
+                  <input type="password"  :value="pwdVal[index]" disabled>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="pay-type">
-            <img src="../assets/icon-money.png" alt="">
-            <span>零钱</span>
-          </div>
-          <!--密码-->
-          <div class="pay-password-panel">
-            <div class="pay-password-wrapper">
-              <div class="pay-input" v-for="(item, index) in pwdLength" :key="index">
-                <input type="password"  disabled>
+        </div>
+        <div class="pay-keyboard-container">
+          <div :class="payOptions.isKeyboardShow ? 'pay-keyboard-panel pay-keyboard-panel-active' : 'pay-keyboard-panel'">
+            <!--下拉-->
+            <div class="pay-pulldown" @click="pullDown">
+              <img src="../assets/icon-pulldown.png" alt="">
+            </div>
+            <!--键盘-->
+            <div class="pay-keyboard-body">
+              <!--1-9-->
+              <div class="pay-keyboard">
+                <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item" @touchstart="valToInput(item,$event)" @touchend="keyPressEnd($event)">
+                  <div class="pay-key">
+                    {{item}}
+                  </div>
+                </div>
+              </div>
+              <!--0和删除部分-->
+              <div class="pay-keyboard-bottom">
+                <div class="pay-key-bottom pay-key-blank"></div>
+                <div class="pay-key-bottom pay-key-wrapper" @touchstart="valToInput(0,$event)" @touchend="keyPressEnd($event)">
+                  <div class="pay-key">0</div>
+                </div>
+                <div class="pay-key-bottom pay-key-blank" @click="delPwd()">
+                  <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="pay-keyboard-container">
-        <div class="pay-keyboard-panel">
-          <!--下拉-->
-          <div class="pay-pulldown">
-            <img src="../assets/icon-pulldown.png" alt="">
-          </div>
-          <!--键盘-->
-          <div class="pay-keyboard-body">
-            <!--1-9-->
-            <div class="pay-keyboard">
-              <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item">
-                <div class="pay-key">
-                  {{item}}
-                </div>
-              </div>
-            </div>
-            <!--0和删除部分-->
-            <div class="pay-keyboard-bottom">
-              <div class="pay-key-bottom pay-key-blank"></div>
-              <div class="pay-key-bottom pay-key-wrapper">
-                <div class="pay-key">0</div>
-              </div>
-              <div class="pay-key-bottom pay-key-blank">
-                <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="loading" v-show="isLoading">
+        <img src="../assets/icon-loading.png" alt="">
+        <div>正在支付中，请稍后</div>
       </div>
     </div>
     <!--遮罩层-->
@@ -74,9 +80,50 @@
     data () {
       return {
         //密码长度
-        pwdLength:6,
+        pwdLength:this.payOptions.pwdLength || 6,
         //键盘数字
-        keyBoards:['1','2','3','4','5','6','7','8','9']
+        keyBoards:['1','2','3','4','5','6','7','8','9'],
+        pwdVal:[],
+        isLoading:false,
+        activeKeyBgColor:this.payOptions.activeKeyBgColor || '#eee'
+      }
+    },
+    methods:{
+      pullDown(){
+        this.payOptions.isKeyboardShow = false;
+      },
+      setPullDown(){
+        //密码框点击事件
+        if(!this.payOptions.isKeyboardShow){
+          this.payOptions.isKeyboardShow = true;
+        }
+      },
+      closePanel(){
+        this.payOptions.isShow = false;
+      },
+      valToInput(val,event){
+        event.target.style.backgroundColor = this.activeKeyBgColor;
+        this.pwdVal.push(val);
+        if(this.pwdVal.length == this.pwdLength){
+          //将得到的数据传递给父组件
+          this.$emit("inputok",this.pwdVal.join(''));
+          this.isLoading = true;
+        }
+      },
+      delPwd(){
+        if(!this.pwdVal.length) return;
+        this.pwdVal.pop();
+      },
+      keyPressEnd(event){
+        event.target.style.backgroundColor = '#f6f6f6';
+      }
+    },
+    watch:{
+      ["payOptions.isShow"](val){
+        if(val){
+          this.pwdVal = [];
+          this.isLoading = false;
+        }
       }
     }
   }
@@ -165,6 +212,25 @@
   }
   .pay-keyboard-container{
     height:310px;
+    position:relative;
+  }
+  .pay-keyboard-panel{
+    position:absolute;
+    left:0;
+    right:0;
+    height:100%;
+    bottom:-100%;
+    z-index:99;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    transition: transform .2s;
+    transform: translateY(0);
+  }
+  .pay-keyboard-panel-active{
+    transition: transform .2s;
+    transform: translateY(-100%);
   }
   /*下拉框部分*/
   .pay-pulldown{
@@ -194,7 +260,7 @@
   .pay-input input{
     width:100%;
     height:100%;
-    font-size:30px;
+    font-size:60px;
     text-align: center;
     background: none;
     outline: none;
@@ -246,17 +312,18 @@
   /*加载动画*/
   .loading{
     padding:100px;
+    background:#fff;
   }
   .loading div{
     padding-top: 100px;
   }
-  .loading svg{
-    -webkit-animation: loader 2s ease-in-out infinite alternate;
-    animation: loader 2s ease-in-out infinite alternate;
+  .loading img{
+    -webkit-animation: loader 2s linear infinite ;
+    animation: loader 2s linear infinite ;
   }
   @keyframes loader {
-    from{transform: rotate(0deg);}
-    to{transform: rotate(720deg);}
+    from{transform: rotate(-360deg);}
+    to{transform: rotate(360deg);}
   }
   /*防止长按选择文本*/
   *{

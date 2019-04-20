@@ -1,21 +1,33 @@
 <template>
   <div id="app">
-    <vue-pay :payOptions="payOptions"></vue-pay>
+    <button @click="changeVal()">改变</button>
+    <vue-pay-plugin :payOptions="payOptions" @inputok="getPassword"></vue-pay-plugin>
   </div>
 </template>
 
 <script>
-  import vuePay from "./lib/vue-pay-plugin.vue";
+  import vuePayPlugin from "./lib/vue-pay-plugin.vue";
   export default {
     name: 'app',
     components:{
-      vuePay
+      vuePayPlugin
     },
     data () {
       return {
         payOptions:{
-          isShow:true
+          isShow:true,
+          isKeyboardShow:true
         }
+      }
+    },
+    methods:{
+      getPassword(res){
+        setTimeout(()=>{
+          this.payOptions.isShow = false;
+        },1000)
+      },
+      changeVal(){
+        this.payOptions.isShow = true;
       }
     }
   }
