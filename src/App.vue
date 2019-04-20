@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vue-pay></vue-pay>
+    <vue-pay :payOptions="payOptions"></vue-pay>
   </div>
 </template>
 
@@ -13,7 +13,9 @@
     },
     data () {
       return {
-
+        payOptions:{
+          isShow:true
+        }
       }
     }
   }

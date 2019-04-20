@@ -1,6 +1,6 @@
 <template>
   <div id="pay">
-    <div class="pay-container pay-container-active">
+    <div :class="payOptions.isShow ? 'pay-container pay-container-active' : 'pay-container'">
       <div class="pay-info-panel">
         <div class="pay-info-header">
           <div class="close-pay-btn">
@@ -33,39 +33,42 @@
         </div>
       </div>
       <!--下拉-->
-      <div class="pay-pulldown">
-        <img src="../assets/icon-pulldown.png" alt="">
-      </div>
-      <!--键盘-->
       <div class="pay-keyboard-panel">
-        <!--1-9-->
-        <div class="pay-keyboard">
-          <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item">
-            <div class="pay-key">
-              {{item}}
+        <div class="pay-pulldown">
+          <img src="../assets/icon-pulldown.png" alt="">
+        </div>
+        <!--键盘-->
+        <div class="pay-keyboard-body">
+          <!--1-9-->
+          <div class="pay-keyboard">
+            <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item">
+              <div class="pay-key">
+                {{item}}
+              </div>
             </div>
           </div>
-        </div>
-        <!--0和删除部分-->
-        <div class="pay-keyboard-bottom">
-          <div class="pay-key-bottom pay-key-blank"></div>
-          <div class="pay-key-bottom pay-key-wrapper">
-            <div class="pay-key">0</div>
-          </div>
-          <div class="pay-key-bottom pay-key-blank">
-            <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
+          <!--0和删除部分-->
+          <div class="pay-keyboard-bottom">
+            <div class="pay-key-bottom pay-key-blank"></div>
+            <div class="pay-key-bottom pay-key-wrapper">
+              <div class="pay-key">0</div>
+            </div>
+            <div class="pay-key-bottom pay-key-blank">
+              <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
+            </div>
           </div>
         </div>
       </div>
     </div>
     <!--遮罩层-->
-    <div class="mask"></div>
+    <div class="mask" v-show="payOptions.isShow"></div>
   </div>
 </template>
 
 <script>
   export default {
     name: 'vue-pay-panel',
+    props:['payOptions'],
     data () {
       return {
         //密码长度
@@ -158,6 +161,9 @@
     text-align: left;
     padding:10px 0;
   }
+  .pay-keyboard-panel{
+    height:310px;
+  }
   /*下拉框部分*/
   .pay-pulldown{
     display: flex;
@@ -193,7 +199,7 @@
     border:none;
   }
   /*键盘部分css*/
-  .pay-keyboard-panel{
+  .pay-keyboard-body{
     border-left:1px solid #ccc;
     height:220px;
   }
