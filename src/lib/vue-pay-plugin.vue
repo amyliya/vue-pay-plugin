@@ -32,29 +32,31 @@
           </div>
         </div>
       </div>
-      <!--下拉-->
-      <div class="pay-keyboard-panel">
-        <div class="pay-pulldown">
-          <img src="../assets/icon-pulldown.png" alt="">
-        </div>
-        <!--键盘-->
-        <div class="pay-keyboard-body">
-          <!--1-9-->
-          <div class="pay-keyboard">
-            <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item">
-              <div class="pay-key">
-                {{item}}
+      <div class="pay-keyboard-container">
+        <div class="pay-keyboard-panel">
+          <!--下拉-->
+          <div class="pay-pulldown">
+            <img src="../assets/icon-pulldown.png" alt="">
+          </div>
+          <!--键盘-->
+          <div class="pay-keyboard-body">
+            <!--1-9-->
+            <div class="pay-keyboard">
+              <div class="pay-key-wrapper" v-for="(item, index) in keyBoards" :key="item">
+                <div class="pay-key">
+                  {{item}}
+                </div>
               </div>
             </div>
-          </div>
-          <!--0和删除部分-->
-          <div class="pay-keyboard-bottom">
-            <div class="pay-key-bottom pay-key-blank"></div>
-            <div class="pay-key-bottom pay-key-wrapper">
-              <div class="pay-key">0</div>
-            </div>
-            <div class="pay-key-bottom pay-key-blank">
-              <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
+            <!--0和删除部分-->
+            <div class="pay-keyboard-bottom">
+              <div class="pay-key-bottom pay-key-blank"></div>
+              <div class="pay-key-bottom pay-key-wrapper">
+                <div class="pay-key">0</div>
+              </div>
+              <div class="pay-key-bottom pay-key-blank">
+                <img src="../assets/icon-delete.png" alt="" class="pay-key-delete">
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +163,7 @@
     text-align: left;
     padding:10px 0;
   }
-  .pay-keyboard-panel{
+  .pay-keyboard-container{
     height:310px;
   }
   /*下拉框部分*/
